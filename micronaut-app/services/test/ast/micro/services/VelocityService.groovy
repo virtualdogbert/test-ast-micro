@@ -6,8 +6,6 @@ import org.apache.velocity.app.VelocityEngine
 
 import javax.annotation.PostConstruct
 import java.nio.charset.StandardCharsets
-//@CompileStatic
-//@Singleton // <1>
 class VelocityService {
 
     private VelocityEngine velocityEngine

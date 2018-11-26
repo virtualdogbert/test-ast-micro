@@ -5,7 +5,6 @@ import io.micronaut.security.authentication.providers.UserState
 import org.grails.datastore.gorm.GormEntity
 //This only needs to be in this package because of a bug, that was fixed:
 //https://github.com/micronaut-projects/micronaut-core/issues/511
-//@Entity // <1>
 class UserDomain implements GormEntity<UserDomain>, UserState { // <2>
     String email
     String username

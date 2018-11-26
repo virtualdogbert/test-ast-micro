@@ -4,8 +4,6 @@ package test.ast.micro.services
 import io.micronaut.security.authentication.*
 import io.reactivex.Flowable
 import org.reactivestreams.Publisher
-//@CompileStatic
-//@Singleton // <1>
 class AuthenticationProviderUserPassword implements AuthenticationProvider  { // <2>
     @Override
     Publisher<AuthenticationResponse> authenticate(AuthenticationRequest authenticationRequest) {

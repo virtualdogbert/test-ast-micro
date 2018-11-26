@@ -7,17 +7,15 @@ import javax.annotation.Nullable
 import java.security.Principal
 
 @Secured("isAnonymous()") // <1>
-//@Controller("/") // <2>
 class HomeController {
 
     protected final VelocityService velocityService
 
-    HomeController(VelocityService velocityService) { // <3>
-        this.velocityService = velocityService
-    }
+//    HomeController(VelocityService velocityService) { // <3>
+//        this.velocityService = velocityService
+//    }
 
-    //@Produces(MediaType.TEXT_HTML) // <4>
-    //@Get("/") // <5>
+
     String index(@Nullable Principal principal) { // <6>
         velocityService.render("home.vm", homeModel(principal))
     }
