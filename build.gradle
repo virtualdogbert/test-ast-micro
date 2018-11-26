@@ -1,0 +1,151 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.4"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.5.RELEASE"
+        //tag::buildscriptDependenciesWebdriverBinaries[]
+        classpath "gradle.plugin.com.energizedwork.webdriver-binaries:webdriver-binaries-gradle-plugin:1.4"
+        //end::buildscriptDependenciesWebdriverBinaries[]
+
+        classpath 'com.virtualdogbert:micro-grails-plugin:1.0.M1'
+
+    }
+}
+
+version "0.1"
+group "test.ast.micro"
+
+
+apply plugin: "io.spring.dependency-management"
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "application"
+apply plugin: "groovy"
+//tag::applyPluginWebdriverBinaries[]
+apply plugin: "com.energizedwork.webdriver-binaries"
+//end::applyPluginWebdriverBinaries[]
+apply plugin: "micro.grails.plugin"
+
+ext {
+//tag::extGorm[]
+    gormVersion = '6.1.9.RELEASE'
+    h2Version = '1.4.196'
+    tomcatJdbcVersion = '8.5.28'
+//end::extGorm[]
+//tag::extSpringSecurityCrypto[]
+    springSecurityCryptoVersion = '4.2.5.RELEASE'
+//end::extSpringSecurityCrypto[]
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://jcenter.bintray.com" }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "io.micronaut:micronaut-bom:$micronautVersion"
+    }
+}
+
+
+dependencies {
+    compile "io.micronaut:micronaut-http-client"
+    compile "io.micronaut:micronaut-http-server-netty"
+    compile "io.micronaut:micronaut-runtime-groovy"
+
+    //tag::gorm[]
+    compile "io.micronaut.configuration:micronaut-hibernate-validator"
+    compile "io.micronaut.configuration:micronaut-hibernate-gorm"
+    compile "org.grails:grails-datastore-gorm-hibernate5:$gormVersion"
+    runtime "com.h2database:h2:$h2Version"
+    runtime "org.apache.tomcat:tomcat-jdbc:$tomcatJdbcVersion"
+    //end::gorm[]
+
+    compileOnly "io.micronaut:micronaut-inject-groovy"
+    runtime "ch.qos.logback:logback-classic:1.2.3"
+    runtime "com.h2database:h2:1.4.196"
+    runtime "org.apache.tomcat:tomcat-jdbc:8.0.44"
+//    testCompile "io.micronaut:micronaut-inject-groovy"
+//    testCompile("org.spockframework:spock-core:1.1-groovy-2.4") {
+//        exclude group: "org.codehaus.groovy", module: "groovy-all"
+//    }
+
+    //tag::securitydependency[]
+    compile "io.micronaut:micronaut-security-session"
+    //end::securitydependency[]
+
+    //tag::velocity[]
+    compile "io.micronaut:micronaut-views"
+    compile "org.apache.velocity:velocity-engine-core:2.0"
+    //end::velocity[]
+
+    //tag::geb[]
+//    testCompile "org.gebish:geb-spock:2.1"
+//    testRuntime "org.seleniumhq.selenium:selenium-chrome-driver:3.6.0"
+//    testRuntime "org.seleniumhq.selenium:selenium-firefox-driver:3.6.0"
+//    testCompile "org.seleniumhq.selenium:selenium-support:3.6.0"
+//    testCompile "org.seleniumhq.selenium:selenium-api:3.6.0"
+    //end::geb[]
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1')
+
+mainClassName = "test.ast.micro.Application"
+
+//tag::webdriverBinaries[]
+webdriverBinaries {
+    chromedriver '2.40'
+    geckodriver '0.21.0'
+}
+//end::webdriverBinaries[]
+
+//tag::taskWithTypeTest[]
+tasks.withType(Test) {
+    systemProperty "geb.env", System.getProperty('geb.env')
+    systemProperty "webdriver.chrome.driver", System.getProperty('webdriver.chrome.driver')
+    systemProperty "webdriver.gecko.driver", System.getProperty('webdriver.gecko.driver')
+}
+//end::taskWithTypeTest[]
+
+//comment in to do remote debugging for AST transforms:
+compileGroovy.groovyOptions.forkOptions.jvmArgs = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005']
+compileTestGroovy.groovyOptions.forkOptions.jvmArgs = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005']
+
+project.rootProject.sourceSets {
+    ast {
+        groovy {
+            compileClasspath += project.configurations.compile
+
+        }
+    }
+
+    main {
+        compileClasspath += sourceSets.ast.output
+    }
+
+    test {
+        compileClasspath += sourceSets.ast.output
+    }
+}
+
+
+
+task copyAstClasses(type: Copy) {
+    from sourceSets.ast.output
+    into sourceSets.main.output.classesDir
+}
+
+tasks.withType(JavaExec) {
+    classpath += sourceSets.ast.output
+}
+
+classes.dependsOn << copyAstClasses

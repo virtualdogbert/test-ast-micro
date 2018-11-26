@@ -1,0 +1,5 @@
+profile: service
+defaultPackage: test.ast.micro
+---
+testFramework: spock
+sourceLanguage: groovy
