@@ -11,11 +11,6 @@ class HomeController {
 
     protected final VelocityService velocityService
 
-//    HomeController(VelocityService velocityService) { // <3>
-//        this.velocityService = velocityService
-//    }
-
-
     String index(@Nullable Principal principal) { // <6>
         velocityService.render("home.vm", homeModel(principal))
     }

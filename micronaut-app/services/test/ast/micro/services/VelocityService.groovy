@@ -1,11 +1,11 @@
 package test.ast.micro.services
 
-
 import org.apache.velocity.VelocityContext
 import org.apache.velocity.app.VelocityEngine
 
 import javax.annotation.PostConstruct
 import java.nio.charset.StandardCharsets
+
 class VelocityService {
 
     private VelocityEngine velocityEngine
