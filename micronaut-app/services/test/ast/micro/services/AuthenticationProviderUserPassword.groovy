@@ -7,7 +7,7 @@ import org.reactivestreams.Publisher
 class AuthenticationProviderUserPassword implements AuthenticationProvider  { // <2>
     @Override
     Publisher<AuthenticationResponse> authenticate(AuthenticationRequest authenticationRequest) {
-        if ( authenticationRequest.identity == "sherlock" && authenticationRequest.secret == "password" ) {
+        if ( authenticationRequest.identity == "user" && authenticationRequest.secret == "password" ) {
             UserDetails userDetails = new UserDetails((String) authenticationRequest.identity, new ArrayList<>())
             return Flowable.just(userDetails) as Flowable<AuthenticationResponse>
         }

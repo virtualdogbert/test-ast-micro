@@ -21,5 +21,15 @@ loginAuth {
         method = 'GET'
         produces = 'text/html'
     }
+
+    username {
+        method = 'GET'
+        produces = 'text/html'
+    }
+
+    createUser {
+        method = 'GET'
+        produces = 'text/html'
+    }
 }
 
