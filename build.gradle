@@ -85,11 +85,13 @@ dependencies {
     //end::velocity[]
 
     //tag::geb[]
-//    testCompile "org.gebish:geb-spock:2.1"
-//    testRuntime "org.seleniumhq.selenium:selenium-chrome-driver:3.6.0"
-//    testRuntime "org.seleniumhq.selenium:selenium-firefox-driver:3.6.0"
-//    testCompile "org.seleniumhq.selenium:selenium-support:3.6.0"
-//    testCompile "org.seleniumhq.selenium:selenium-api:3.6.0"
+    testCompile ("org.gebish:geb-spock:2.1"){
+        exclude group: "org.codehaus.groovy", module: "groovy-all"
+    }
+    testRuntime "org.seleniumhq.selenium:selenium-chrome-driver:3.6.0"
+    testRuntime "org.seleniumhq.selenium:selenium-firefox-driver:3.6.0"
+    testCompile "org.seleniumhq.selenium:selenium-support:3.6.0"
+    testCompile "org.seleniumhq.selenium:selenium-api:3.6.0"
     //end::geb[]
 }
 
